@@ -7,7 +7,7 @@ var n = 5001;
 var time = Array.from({length: n}, (item, index) => index);
 console.log(time);
 // const CSV =  "https://raw.githubusercontent.com/chris3edwards3/exampledata/master/plotlyJS/line.csv";
-canvas.style.background = "#ff8";
+canvas.style.background = "#2f308f";
 canvas.addEventListener("mousemove", mousemove);
 
 
@@ -34,6 +34,10 @@ var data = [{
 }];
 // Define Layout
 var layout = {
+    options: {
+        scales:{x: {type: 'realtime'} }
+    },
+       
     autosize: false,
     width: 400,
     height: 300,
@@ -54,13 +58,12 @@ var layout = {
   };
 // Define config
   let config = { 
-            responsive: true,
+        responsive: true, 
         };
 
 Plotly.newPlot('chart1', data,layout,config);
 var cnt = 0;
 var interval = setInterval(function() {
-  var time = new Date();
   var update = {
   y: [[realtimeX]]
   }
@@ -70,6 +73,8 @@ var interval = setInterval(function() {
   if(++cnt === 100) clearInterval(interval);
 
 }, 1000);
+
+
 
 
 
