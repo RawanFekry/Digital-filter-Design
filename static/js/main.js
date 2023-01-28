@@ -1,98 +1,126 @@
 let canvas = document.getElementById("realtimecanvas");
 let realtimechart1 = document.getElementById("chart1");
-let realtimechart2 = document.getElementById("chart2");
 var context = canvas.getContext('2d');
-var realtimeX= [];
-var realtimeY= [];
+var realtimeX= 0;
+var realtimeY= 0;
+var n = 5001;
+var time = Array.from({length: n}, (item, index) => index);
+console.log(time);
 // const CSV =  "https://raw.githubusercontent.com/chris3edwards3/exampledata/master/plotlyJS/line.csv";
 canvas.style.background = "#ff8";
 canvas.addEventListener("mousemove", mousemove);
 
+
+// Get current mouse position
 function mousemove(event){
 
     let x= event.offsetX;
     let y= event.offsetY;
-    realtimeX.push(x);
-    realtimeY.push(y);
+    realtimeX= x;
+    realtimeY= y;
     console.log(realtimeX)
     console.log(realtimeY)
 
 }
 
 
+// Plot generated signal
+var time = new Date();
+var data = [{
+  x: [time],
+  y: [realtimeX],
+  mode: 'lines',
+  line: {color: '#80CAF6'}
+}]
 
-function plotFromCSV() {
-    Plotly.d3.csv(CSV, function(err, rows) {
-        console.log(rows);
-        processData(rows);
-    });
-}
+Plotly.newPlot('chart1', data);
+var cnt = 0;
+var interval = setInterval(function() {
+  var time = new Date();
+  var update = {
+
+  x:  [[time]],
+  y: [[realtimeX]]
+
+  }
+
+  Plotly.extendTraces('chart1', update, [0])
+
+  if(++cnt === 100) clearInterval(interval);
+
+}, 1000);
 
 
-function processData(allRows) {
-    let x = [];
-    let y1 = [];
-    let y2 = [];
-    let row;
+// Plot signal from csv file
+// function plotFromCSV() {
+//     Plotly.d3.csv(CSV, function(err, rows) {
+//         console.log(rows);
+//         processData(rows);
+//     });
+// }
 
-    let i = 0;
-    while (i < allRows.length) {
-        row = allRows[i];
-        x.push(row["time"]);
-        y.push(row["magnitude"]);
-        i += 1;
-    }
+
+// function processData(allRows) {
+//     let x = [];
+//     let y = [];
+//     let row;
+
+//     let i = 0;
+//     while (i < allRows.length) {
+//         row = allRows[i];
+//         x.push(row["time"]);
+//         y.push(row["magnitude"]);
+//         i += 1;
+//     }
     
-    console.log("X", x);
-    console.log("Y", y);
+//     console.log("X", x);
+//     console.log("Y", y);
 
-    makePlotly(x, y);
-}
+//     makePlotly(x, y);
+// }
 
 
-function makePlotly(x, y) {
-    let traces = [
-        {
-            x: x,
-            y: y,
-            name: "A",
-            line: {
-                color: "#387fba",
-                width: 2
-            }
-        },
-    ];
+// function makePlotly(x, y) {
+//     let traces = [
+//         {
+//             x: x,
+//             y: y,
+//             line: {
+//                 color: "#387fba",
+//                 width: 2
+//             }
+//         },
+//     ];
 
-    let layout = {
-        title: "Basic Line Chart",
-        yaxis: {
-            range: [0, 100]
-        },
-        xaxis: {
-            // tickformat: "%d/%m/%y"
-        },
-    };
+//     let layout = {
+//         title: "Basic Line Chart",
+//         yaxis: {
+//             range: [0, 100]
+//         },
+//         xaxis: {
+//             // tickformat: "%d/%m/%y"
+//         },
+//     };
 
-    //https://plot.ly/javascript/configuration-options/
-    let config = { 
-        responsive: true,
-        // staticPlot: true,
-        // editable: true
-    };
+//     //https://plot.ly/javascript/configuration-options/
+//     let config = { 
+//         responsive: true,
+//         // staticPlot: true,
+//         // editable: true
+//     };
 
-    Plotly.newPlot(realtimechart1, traces, layout, config);
-}
+//     Plotly.newPlot("chart1", traces, layout, config);
+// }
 
-plotFromCSV();
-
+// plotFromCSV();
 
 
 
 
 
-setInterval(function() {
-    Plotly.extendTraces(realtimechart1, [{y: realtimeX}] , [0])
-  }, 200);
+// setInterval(function() {
+//      Plotly.extendTraces("chart1", data , [0])
+//    }, 200);
 
 
 
