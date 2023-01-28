@@ -27,21 +27,52 @@ function mousemove(event){
 // Plot generated signal
 var time = new Date();
 var data = [{
-  x: [time],
+  //x: [time],
   y: [realtimeX],
   mode: 'lines',
   line: {color: '#80CAF6'}
-}]
+}];
+// Define Layout
+var layout = {
+    autosize: false,
+    width: 400,
+    height: 300,
+    // margin: {
+    //     l: 50,
+    //     r: 50,
+    //     b: 100,
+    //     t: 100,
+    //     pad: 4
+    //   },
+    xaxis: {title: "Time()",titlefont: { size:10, color: 'black'},
+        tickfont: {
+            size: 10,
+            color: 'black'}},
+    yaxis: {
+        //automargin: true,
+        titlefont: { size:10, color: 'black'},
+        title: "Magnitude(volt)"},
+    title: {
+    text:"Unfiltered Signal",
+    font: {
+        size: 15
+    }
+    }
+  };
+// Define config
+  let config = { 
+            responsive: true,
+            // staticPlot: true,
+            // editable: true
+        };
 
-Plotly.newPlot('chart1', data);
+Plotly.newPlot('chart1', data,layout,config);
 var cnt = 0;
 var interval = setInterval(function() {
   var time = new Date();
   var update = {
-
-  x:  [[time]],
+  //x:  [[time]],
   y: [[realtimeX]]
-
   }
 
   Plotly.extendTraces('chart1', update, [0])
@@ -118,9 +149,7 @@ var interval = setInterval(function() {
 
 
 
-// setInterval(function() {
-//      Plotly.extendTraces("chart1", data , [0])
-//    }, 200);
+
 
 
 
@@ -129,7 +158,9 @@ var interval = setInterval(function() {
 
 
 
-
+// setInterval(function() {
+//      Plotly.extendTraces("chart1", data , [0])
+//    }, 200);
 // window_width = window.innerWidth;
 // window_height = window.innerHeight;
 // var window_width = 200;
