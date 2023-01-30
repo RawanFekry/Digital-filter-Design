@@ -1,6 +1,5 @@
 from flask import Flask , flash, request, redirect, url_for, render_template
 import json
-import urllib.request
 from werkzeug.utils import secure_filename
 
 

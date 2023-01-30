@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="../static/styles/style.css">
     <script src="https://cdn.plot.ly/plotly-latest.min.js "></script> 
     <script src="../static/js/p5.min.js"></script>
+    <script src="../static/js/papaparse.min.js"></script>
 </head>
 
 
@@ -14,21 +15,29 @@
 
 <body>
 
+    <input type="file" onclick="read_csv()" accept=".csv" id="csv" class="form-control">
+    
+    <script>
+    </script>
+
+
     <figure class="realtime">
         
-        <canvas id="realtimecanvas" width="200" height="80" ></canvas>
-        <div id="chart1" width="200" height="80" ></div>
-        <div id="chart2" width="200" height="80"></div>
+        <canvas id="realtimecanvas" width="200" height="80"></canvas>
+        <div id="chart1" style=" width:200; height:80;" ></div>
+        <div id="chart2" style="width:200;  height:80; "></div>
 
     </figure>
+
     <div  id="Unit-circle">
         <div id="Z-plane"></div>
         <div id="unit-circle-buttons">
             <button id="zero" class=" mode-control">Add Zeros</button>
             <button id="pole" class=" mode-control">Add Poles</button>
-            <button id="delet" >Delet</button>
+            <button id="delet" >Delete</button>
         </div>
     </div>
+
 
 <script src="../static/js/Unitcircle.js"></script>
 <script src="../static/js/main.js"></script>
