@@ -1,30 +1,39 @@
 let unit_circle_center, radius
 let curr_picked
 let filter_plane
-let mode
-let final_position
-const zero = document.getElementById("zero")
-const pole= document.getElementById("pole")
-const modes = [zero, pole]
+let unit_circle_mode
+let last_press_position
+const zero_mode_btn = document.getElementById("zero")
+const pole_mode_btn = document.getElementById("pole")
+const modes_btns = [zero_mode_btn, pole_mode_btn]
+const CANVAS_SIZE = 300
 const NONE_PICKED = { item: {point: null, conjugate: null}, index: -1 }
-const Mode = { ZERO : 0, POLE : 1 }
-const API = "http://127.0.0.1:8080"
+const Mode = { ZERO : 0, POLE : 1, CONJ_ZERO : 2, CONJ_POLE : 3 }
+const Conj_Modes = {2: Mode.CONJ_ZERO, 3: Mode.CONJ_POLE}
+const API = "http://127.0.0.1:8000/"
 const modesMap = {
     'zero': Mode.ZERO,
     'pole': Mode.POLE,
 }
 
+
 const s = (p5_inst) => {
     p5_inst.setup = function () {
         p5.disableFriendlyErrors = true;
-        p5_inst.createCanvas(300, 300)
-        radius = 300 / 2.1
-        unit_circle_center = p5_inst.createVector(150,150)
+
+        p5_inst.createCanvas(CANVAS_SIZE, CANVAS_SIZE)
+        radius = CANVAS_SIZE / 2.1
+        unit_circle_center = p5_inst.createVector(
+            CANVAS_SIZE / 2,
+            CANVAS_SIZE / 2
+        )
         curr_picked = NONE_PICKED
-        mode = Mode.ZERO
+        unit_circle_mode = Mode.ZERO
         filter_plane = new FilterPlane()
+
         p5_inst.noLoop()
     }
+
     p5_inst.draw = function () {
         p5_inst.clear()
         drawUnitCricle()
@@ -32,17 +41,34 @@ const s = (p5_inst) => {
     }
     p5_inst.mousePressed = function () {
         let p = p5_inst.createVector(p5_inst.mouseX, p5_inst.mouseY)
-        final_position = p
+        last_press_position = p
     }
-   p5_inst.mouseReleased = function () {
+
+    p5_inst.mouseMoved = function () {
+        drawCursor()
+    }
+
+    p5_inst.doubleClicked = function () {
+        curr_picked = NONE_PICKED
+        p5_inst.redraw()
+    }
+
+    p5_inst.mouseClicked = function () {
+        updateFilterDesign(filter_plane.getZerosPoles(radius))
+        // updateAllPassCoeff()
+        p5_inst.noLoop()
+        return true
+    }
+
+    p5_inst.mouseReleased = function () {
         let p = p5_inst.createVector(p5_inst.mouseX, p5_inst.mouseY)
-        let position_changed = p.dist(final_position) != 0
+        let position_changed = p.dist(last_press_position) != 0
         if (filter_plane.isInsidePlane(p)) {
             let found = filter_plane.therePoint(p)
             if (found.item.point) {
                 curr_picked = found
             }
-            else if(!position_changed) filter_plane.addItem(p, mode = mode)
+            else if(!position_changed) filter_plane.addItem(p, mode = unit_circle_mode)
             drawCursor()
             p5_inst.redraw()
         }
@@ -51,11 +77,17 @@ const s = (p5_inst) => {
     p5_inst.mouseDragged = function () {
         let p = p5_inst.createVector(p5_inst.mouseX, p5_inst.mouseY)
         if (curr_picked != NONE_PICKED && isInsideCircle(p, unit_circle_center, radius, 0)) {
-        
+            if(!curr_picked.item.conjugate){
                 p.y = unit_circle_center.y
                 curr_picked.item.point.center = p
             }
-       
+            else{
+                curr_picked.item.point.center = p
+                curr_picked.item.conjugate.center = curr_picked.item.point.getConjugate().center
+            }
+        }
+        updateFilterDesign(filter_plane.getZerosPoles(radius))
+        // updateAllPassCoeff()
         drawCursor()
         p5_inst.redraw()
     }
@@ -88,21 +120,20 @@ const s = (p5_inst) => {
     }
 
     function drawUnitCricle() {
-        p5_inst.background('rgba(0,255,0, 0)')
+        // p5_inst.background('rgba(0,255,0, 0)')
         p5_inst.stroke(255)
         p5_inst.fill('#ccc')
         p5_inst.circle(unit_circle_center.x, unit_circle_center.y, radius * 2)
         p5_inst.stroke("#5b5a5a")
         p5_inst.noFill()
-        p5_inst.circle(unit_circle_center.x, unit_circle_center.y, radius * 6/3)
-        
+        p5_inst.circle(unit_circle_center.x, unit_circle_center.y, radius * 2)
         const axes = [
             p5_inst.createVector(radius, 0),
             p5_inst.createVector(-radius, 0),
             p5_inst.createVector(0, radius),
             p5_inst.createVector(0, -radius)
         ]
-        axes.forEach((axis) => { unitCircleAxes(unit_circle_center, axis, 'black') })
+        axes.forEach((axis) => { arrow(unit_circle_center, axis, '#000') })
     }
 
     function isInsideCircle(p, center, radius, error=0) {
@@ -129,8 +160,8 @@ const s = (p5_inst) => {
         p5_inst.pop()
     }
 
-    function unitCircleAxes(base, vec, myColor) {
-        let arrowSize = 5
+    function arrow(base, vec, myColor) {
+        let arrowSize = 7
         p5_inst.push()
         p5_inst.stroke(myColor)
         p5_inst.strokeWeight(1.5)
@@ -159,7 +190,16 @@ const s = (p5_inst) => {
         getRelativePosition(max){
             return [this.getRelativeX(max), this.getRelativeY(max)]
         }
-       hash() {
+
+        getConjugate() {
+            let conjugate_center = p5_inst.createVector(
+                this.center.x,
+                this.origin.y - this.getRelativeY(1)
+            )
+            return new Point(conjugate_center, this.origin)
+        }
+
+        hash() {
             return `${this.center.x}${this.center.y}`
         }
     }
@@ -169,16 +209,19 @@ const s = (p5_inst) => {
             super(center, origin)
         }
 
-        draw(size = 10, fill = '#febc2c', picked = false) {
+        draw(size = 10, fill = '#1f77b4', picked = false) {
             p5_inst.push()
-            if (picked) fill = '#1f77b4'
-            p5_inst.stroke("#767575")
+            if (picked) fill = '#fd413c' 
+            p5_inst.stroke("#ffff")
             p5_inst.fill(fill)
             p5_inst.circle(this.center.x, this.center.y, size)
             p5_inst.pop()
         }
 
-     
+        getConjugate() {
+            let p = super.getConjugate()
+            return new Zero(p.center, p.origin)
+        }
     }
 
     class Pole extends Point {
@@ -186,13 +229,16 @@ const s = (p5_inst) => {
             super(center, origin)
         }
 
-        draw(size = 10, fill = '#fd413c', picked = false) {
+        draw(size = 10, fill = '#1f77b4', picked = false) {
             picked
-                ? cross(this.center, size, fill, 2, '#1f77b4')
+                ? cross(this.center, size, fill, 2, '#fd413c')
                 : cross(this.center, size, fill, 2, fill)
         }
 
-     
+        getConjugate() {
+            let p = super.getConjugate()
+            return new Pole(p.center, p.origin)
+        }
     }
 
     class FilterPlane {
@@ -200,7 +246,7 @@ const s = (p5_inst) => {
             this.items = []
         }
 
-       
+        //TODO: fix release bug
         therePoint(p, error = 5) {
             for (let i = 0; i < this.items.length; i++) {
                 let item = this.items[i]
@@ -221,7 +267,19 @@ const s = (p5_inst) => {
             return isInsideCircle(p, unit_circle_center, radius, 0)
         }
 
-      
+        getZerosPoles(max) {
+            let zerosPositions = [],
+                polesPositions = []
+            this.items.forEach(({ point, conjugate }) => {
+                let pointPosition = point.getRelativePosition(max)
+                let conjugatePosition = conjugate?.getRelativePosition(max)
+                let positions =
+                    point instanceof Zero ? zerosPositions : polesPositions
+                positions.push(pointPosition)
+                if (conjugatePosition) positions.push(conjugatePosition)
+            })
+            return { zeros: zerosPositions, poles: polesPositions }
+        }
 
         addItem(p, mode) {
             if (mode == Mode.ZERO) this.#addZero(p)
@@ -229,8 +287,9 @@ const s = (p5_inst) => {
             curr_picked = NONE_PICKED
         }
 
+      
 
-        delet(index) {
+        remove(index) {
             if (index < 0) return
             this.items.splice(index, 1)
             p5_inst.redraw()
@@ -238,9 +297,7 @@ const s = (p5_inst) => {
 
         #addZero(p) {
             if (Math.abs(unit_circle_center.y - p.y) > 5){
-                let center = p5_inst.createVector(p.x, p.y)
-                let zero = new Zero(center, unit_circle_center)
-                this.items.push({ point: zero })
+                this.#addConjugateZero(p)
                 return
             }
             let center = p5_inst.createVector(p.x, unit_circle_center.y)
@@ -250,33 +307,45 @@ const s = (p5_inst) => {
 
         #addPole(p) {
             if (Math.abs(unit_circle_center.y - p.y) > 5){
-                let center = p5_inst.createVector(p.x, p.y)
-                let pole = new Pole(center, unit_circle_center)
-                this.items.push({ point: pole })
+                this.#addConjugatePole(p)
                 return
             }
             let center = p5_inst.createVector(p.x, unit_circle_center.y)
             let pole = new Pole(center, unit_circle_center)
             this.items.push({ point: pole, conjugate: null })
         }
-     }
- }
+        
+
+        #addConjugatePole(p) {
+            let center = p5_inst.createVector(p.x, p.y)
+            let pole = new Pole(center, unit_circle_center)
+            let conjugate_pole = pole.getConjugate()
+            this.items.push({ point: pole, conjugate: conjugate_pole })
+        }
+
+        #addConjugateZero(p) {
+            let center = p5_inst.createVector(p.x, p.y)
+            let zero = new Zero(center, unit_circle_center)
+            let conjugate_zero = zero.getConjugate()
+            this.items.push({ point: zero, conjugate: conjugate_zero })
+        }
+    }
+
+}
+
+function changeMode(e){
+    unit_circle_mode = modesMap[e.target.id]
+    for(btn of modes_btns){
+        btn.style.color = (btn !== e.target) ? "#fff" : "#febc2c";
+    }
+}
 
 document.querySelectorAll('.mode-control').forEach(item => {
     item.addEventListener('click', changeMode)
 })
 
 document
-    .querySelector('#delet')
-    .addEventListener('click', () => filter_plane.delet(curr_picked.index))
+    .querySelector('#remove')
+    .addEventListener('click', () => filter_plane.remove(curr_picked.index))
 
-function changeMode(e){
-        mode = modesMap[e.target.id]
-        for(btn of modes){
-            btn.style.color = (btn !== e.target) ? "#fff" : "#febc2c";
-        }
-    }
-let filterCanvas = new p5(s, 'Z-plane')
-
-
-
+let filterCanvas = new p5(s, 'circle-canvas')
