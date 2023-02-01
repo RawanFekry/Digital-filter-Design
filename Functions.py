@@ -17,13 +17,6 @@ def frequencyResponse(zeros, poles, gain):
     magnitude= np.around(magnitude, decimals=3)
     return w,angles,magnitude
 
-def phaseResponse(a):
-    w, h = scipy.signal.freqz([-a, 1.0], [1.0, -a])
-    angels = np.zeros(512) if a==1 else np.unwrap(np.angle(h))
-    w=w/max(w)
-    angles=np.around(angels, decimals=3)
-    return w,angles
-    
  # convert zeros and poles to complex numbers
 def parseToComplex(pairs):
     complexNumbers = [0]*len(pairs)
@@ -32,3 +25,21 @@ def parseToComplex(pairs):
         y = round(pairs[i][1], 2)
         complexNumbers[i] = x+ y*1j
     return complexNumbers
+
+
+
+def phaseResponse(a):
+    w, h = scipy.signal.freqz([-a, 1.0], [1.0, -a])
+    angels = np.zeros(512) if a==1 else np.unwrap(np.angle(h))
+    w=w/max(w)
+    angles=np.around(angels, decimals=3)
+    return w,angles
+    
+    
+def getAllPassFrequencyResponse(filterCoeffients):
+        filter_angles = np.zeros(512)
+        w = np.zeros(512)
+        for coeffient in filterCoeffients:
+            w, angles = phaseResponse(coeffient)
+            filter_angles = np.add(filter_angles, angles)
+        return w, filter_angles

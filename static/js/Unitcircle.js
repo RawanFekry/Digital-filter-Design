@@ -87,7 +87,7 @@ const s = (p5_inst) => {
             }
         }
         updateFilterDesign(filter_plane.getZerosPoles(radius))
-        // updateAllPassCoeff()
+        updateAllPassCoeff()
         drawCursor()
         p5_inst.redraw()
     }
