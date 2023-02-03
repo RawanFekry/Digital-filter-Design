@@ -336,7 +336,7 @@ const s = (p5_inst) => {
 function changeMode(e){
     unit_circle_mode = modesMap[e.target.id]
     for(btn of modes_btns){
-        btn.style.color = (btn !== e.target) ? "#fff" : "#febc2c";
+        btn.style.color = (btn !== e.target) ? "#fff" : "#fff";
     }
 }
 

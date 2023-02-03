@@ -1,15 +1,22 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
+
 
 <head> 
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" type="text/css" href="../static/styles/style.css">
+
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Digital Filter Design</title>
+    <link rel="stylesheet" href="../static/styles/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="../static/java script/jquery-3.6.2.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js "></script> 
     <script src="../static/js/p5.min.js"></script>
     <script src="../static/js/papaparse.min.js"></script>
-    <script src="../static/js/plotly-2.8.3.min.js"></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.2.0/math.js'></script>
-    <title>Digital Filter Design</title>
+
 </head>
 
 
@@ -17,99 +24,94 @@
 
 
 <body>
+	<div class="parent">
 
-    <input type="file" onclick="read_csv()" accept=".csv" id="csv" class="form-control">
+
+		<div class="element div1"> 
+            <button class="btn btn-4 btn-sep icon-import">Import Filter</button>
+        </div>
+
+
     
-    <script>
-    </script>
-
-
-    <figure class="realtime">
-        
-        <canvas id="realtimecanvas" width="200" height="80"></canvas>
-        <div id="chart1" style=" width:200; height:80;" ></div>
-        <div id="chart2" style="width:200;  height:80; "></div>
-
-    </figure>
-
-	
-	<div id="design-unit-circle">
-		<h2 id="circle-title">Digital Filter Design</h2>
-		<div id="circle-canvas"></div>
-		<div id="circle-control">
-			<button id="zero" class="btn-cricle-control mode-control">Add Zeros</button>
-			<button id="pole" class="btn-cricle-control mode-control">Add Poles</button>
-			<button id="remove" class="btn-cricle-control">Remove</button>
+    
+	<div class="element div2" > 
+		<div class="toggle-div" id="design-unit-circle">
+		<div id='circle-control' class="button-element" onclick="toggleas(this)">
+			<button id= "zero" class="btn-cricle-control mode-control">Add Zeros</button>
+		</div>
+		<div class="button-element dark-button" onclick="toggleas(this)">
+		<button id="pole" class="btn-cricle-control mode-control" >Add Poles</button>
+		</div>	
 		
 		</div>
+		<div  class="button-remove" onclick="remove(this)">
+			<button id="remove" ><i class="fa-solid fa-trash"></i></button>
+		</div>
+		
 	</div>
-	<div  id="filter-response">
-		<h4 >Magnitude Response</h4>
+
+	<div class="element div3" id="circle-canvas"> 
+	</div>
+
+	
+	<div class="element div4"> 
+		<button  class="btn btn-4 btn-sep icon-export">Export Filter</button>
+		
+
+	</div>
+
+	<div class="element div5"> 
+
+		<a href="../templates/correctPhase.html">		
+				<button class="btn btn-4 btn-sep icon-check"> Correct Phase</button>
+			</a>
+	</div>
+	<div class="element div6 lightel">
+		<h2>Phase Response</h2>
+		<div id="filter-phase-response" class="response-plotting"> </div>
+	</div>
+
+	<div class="element div7 darkel">
+		<h2>Magnitude Response</h2>
+
 		<div id="filter-mag-response" class="response-plotting"> </div>
-		<h4 >Phase Response</h2>
-			<div id="filter-phase-response" class="response-plotting"> </div>
 	</div>
-	<!-- <div id="page2">
-		<button id="phase-correction" onclick="redirect()">Correct Phase</button>
-		<script>
-			function redirect(){
-				window.location.assign("allPass.html");
-			}
-		</script>
-	</div> -->
-	<div class="box" id="all-pass-unit-circle">
-		<h2 id="all-pass-title" class="title">All Pass Filter Design</h2>
-		<div id="all-pass-container">
-			<div id="list1" class="dropdown-check-list" tabindex="100">
-				<span class="anchor btn">All Pass Filter Coefficients</span>
-				<ul id="listOfA" class="items">
-					<li><input class="target1" type="checkbox" data-avalue="1" />1</li>
-					<li><input class="target1" type="checkbox" data-avalue="0.1" />0.1 </li>
-					<li><input class="target1" type="checkbox" data-avalue="0.5" />0.5</li>
-					<li><input class="target1" type="checkbox" data-avalue="-0.9" />-0.9</li>
-					<li><input class="target1" type="checkbox" data-avalue="-0.45" />-0.45</li>
-					<li><input class="target1" type="checkbox" data-avalue="0.78" />0.78</li>
-					<li><input class="target1" type="checkbox" data-avalue="0.99" />0.99</li>
-					<li><input class="target1" type="checkbox" data-avalue="0.358" />0.358</li>
-					<li><input class="target1" type="checkbox" data-avalue="0.836" />0.836</li>
-				</ul>
-			</div>
-			<label for="real">Real Part:</label>
-			<input type="number" id="real" name="Real Part" min="-5" max="5">
-			<label for="imaginary">Imaginary Part:</label>
-			<input type="number" id="imaginary" name="Imaginary Part" min="-5" max="5">
-			<button id="new-all-pass-coef" class="btn">Add</button>
+
+	<div class="element div8">
+		<div class="toggle-div">
+		<div  class="button-element">
+		 <button id="generate">Generate Signal</button> 
 		</div>
-		<div >
-			<div id="all-pass-phase-response" class="response-plotting"> </div>
+		<div class="button-element dark-button">
+		<input type="file" onclick="read_csv()" accept=".csv" id="csv" class="form-control" style="display:none;"> 
+		<label  id="upload" for="csv">Upload Signal</label>
 		</div>
-		<div >
-			<div id="final-filter-phase-response" class="response-plotting"> </div>
 		</div>
 	</div>
-	<!-- <div class="catalogue">
-		<img class="image" src="static/img/1.jpeg">
-		<img class="image" src="static/img/0.1.jpeg">
-		<img class="image" src="static/img/0.5.jpeg">
-		<img class="image" src="static/img/-0.45.jpeg">
-		<img class="image" src="static/img/0.358.jpeg">
-		<img class="image" src="static/img/0.99.jpeg">
-		<img class="image" src="static/img/0.836.jpeg">
-		<img class="image" src="static/img/0.78.jpeg">
-		<img class="image" src="static/img/-0.9.jpeg">
-	</div> -->
-	
-	
-	
-<script src="../static/js/Unitcircle.js"></script>
-<script src="../static/js/plotting.js"></script>
-<script src="../static/js/Allpass.js"></script>
-<script src="../static/js/main.js"></script>
+	<div class="element div9">
+		<canvas id="realtimecanvas" ></canvas>
+
+
+	</div>
+	<div class="element div10 lightel"  id="chart1" > 
+		<!-- <div id="chart1" style=" width:200; height:80;" ></div> -->
+	</div>
+	<div class="element div11 darkel" id="chart2"> 
+		<!-- <div id="chart2" style="width:200;  height:80; "></div> -->
+	</div>
+
+
+
+</div>
+
+
 </body>
 
-
-
-
+<script src="../static/js/Front.js"></script>
+<script src="../static/js/Unitcircle.js"></script>
+<script src="../static/js/plotting.js"></script>
+<script src="../static/js/main.js"></script>
+<script src="../static/js/Allpass.js"></script>
 
 </html>
 

@@ -19,14 +19,42 @@ async function updateFilterDesign(data) {
     let { w, angels, magnitude } = await postData(`${API}/getFilter`, data)
    Plotly.newPlot(
         filterDesignMagnitude,
-        [{ x: w, y: magnitude, line: { color: '#red' } }, ],
-       {xaxis: {autorange: true,}, yaxis: { autorange: true,  }, },
+        [{ x: w, y: magnitude, line: { color: 'red' } } ],
+        {
+            paper_bgcolor:"#efefef",
+            plot_bgcolor:"#efefef",
+            autosize: false,
+            width:400,
+            height:250,
+
+            margin: {
+              l: 30,
+              r: 0,
+              b: 20,
+              t: 10,
+              pad: 0
+            }
+        },
        { staticPlot: true })
         
     Plotly.newPlot(
         filterDesignPhase,
-        [{ x: w, y: angels, line: { color: '#red' } }, ],
-       {xaxis: {autorange: true,}, yaxis: { autorange: true,  }, },
+        [{ x: w, y: angels, line: { color: 'red' } }, ],
+        {
+            paper_bgcolor:"#f4f4f4",
+            plot_bgcolor:"#f4f4f4",
+            autosize: false,
+            width:400,
+            height:250,
+
+            margin: {
+              l: 30,
+              r: 0,
+              b: 20,
+              t: 10,
+              pad: 0
+            }
+        },
        { staticPlot: true })
   
 }

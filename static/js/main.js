@@ -9,18 +9,27 @@ var realtimeY= [];
 canvas.style.background = "#2f308f";
 canvas.addEventListener("mousemove", mousemove);
 // Define First Layout
+
 var layout = {
-    autosize: false,
-    width: 400,
-    height: 300,
+    paper_bgcolor:"#f4f4f4",
+    plot_bgcolor:"#f4f4f4",
+    autosize: true, 
+    margin: {
+      l: 40,
+      r: 0,
+      b: 30,
+      t: 30,
+      pad: 0
+    },
     xaxis: {title: "Time(ms)",titlefont: { size:10, color: 'black'},
         tickfont: {
             size: 10,
             color: 'black'}},
     yaxis: {
         //range: [2, 5],
-        titlefont: { size:10, color: 'black'},
+        titlefont: { size:10, color: 'black' ,automargin:true},
         title: "Magnitude(volt)"},
+        
     title: {
     text:"Unfiltered Signal",
     font: {
@@ -30,9 +39,16 @@ var layout = {
   };
 // Define Second Layout
   var layout2 = {
-    autosize: false,
-    width: 400,
-    height: 300,
+    paper_bgcolor:"#efefef",
+    plot_bgcolor:"#efefef",
+    autosize: true,
+    margin: {
+      l: 40,
+      r: 10,
+      b: 30,
+      t: 30,
+      pad: 0
+    },
     xaxis: {title: "Time(ms)",titlefont: { size:10, color: 'black'},
         tickfont: {
             size: 10,
@@ -62,8 +78,7 @@ function mousemove(event){
     let y= event.offsetY;
     realtimeX.push(x);
     realtimeY.push(y);
-    console.log(realtimeX)
-    console.log(realtimeY)
+
 }
 
 
