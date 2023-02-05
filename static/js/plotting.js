@@ -61,3 +61,7 @@ async function updateFilterDesign(data) {
 
 
 
+async function applyfilter(data) {
+    let { output } = await postData(`${API}/applyFilter`, data)
+    return output
+}

@@ -43,3 +43,11 @@ def getAllPassFrequencyResponse(filterCoeffients):
             w, angles = phaseResponse(coeffient)
             filter_angles = np.add(filter_angles, angles)
         return w, filter_angles
+
+
+
+# Applying the filter to the signal
+def apply_filter(zeros, poles, gain, signal):
+    b, a= scipy.signal.zpk2tf(zeros, poles, gain)
+    output= scipy.signal.lfilter(b, a, signal)
+    return output

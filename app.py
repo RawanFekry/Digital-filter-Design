@@ -9,6 +9,11 @@ app = Flask(__name__)
 app.secret_key = "secret key"
 CORS(app)
 
+
+zero=[]
+pole=[]
+k=[]
+output=[]
  
 @app.route('/', methods= ['GET','POST'])
 def home():
@@ -21,6 +26,7 @@ def home():
 @app.route('/getFilter', methods=['POST'])
 @cross_origin()
 def getFrequencyResponce():
+    global zero, pole, k
     if request.method == 'POST':
         zerosAndPoles = json.loads(request.data)
         zeros = parseToComplex(zerosAndPoles['zeros'])
@@ -32,6 +38,9 @@ def getFrequencyResponce():
                 'angels': angles.tolist(),
                 'magnitude': magnitude.tolist()
             }
+        zero= zeros
+        pole= poles
+        k= gain
     return jsonify(response_data)
 
 @app.route('/getAllPassFilter', methods=['POST', 'GET'])
@@ -71,6 +80,20 @@ def getFinalFilter():
                 'magnitude': finalMagnitude.tolist()
             }
     return jsonify(response_data)
+@app.route('/applyFilter', methods=['GET','POST'])
+@cross_origin()
+def filtered_signal():
+    global output
+    if request.method == 'POST':
+        unfiltered_signal = json.loads(request.data)      #this converts the json output to a python dictionary
+        key= list(unfiltered_signal.keys())[0]
+        output = apply_filter(zeros=zero, poles=pole, gain=k, signal=unfiltered_signal.get(key))
+        response_signal = {
+                'output': output.tolist(),
+            }
+        
+    return jsonify(response_signal)
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)

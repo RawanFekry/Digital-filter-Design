@@ -3,13 +3,16 @@ let realtimechart1 = document.getElementById("chart1");
 var flag1= false;
 var flag2= false;
 var time= [];
-var csv_x= [];
+var timearray= [];
 var realtimeX= [];
 var realtimeY= [];
+var amplitude= [];
+var filteredsignal= [];
+var newArray= [];
+var drawfilter= [];
 canvas.style.background = "#2f308f";
 canvas.addEventListener("mousemove", mousemove);
 // Define First Layout
-
 var layout = {
     paper_bgcolor:"#f4f4f4",
     plot_bgcolor:"#f4f4f4",
@@ -73,48 +76,68 @@ let config = {
 
 // Get current mouse position
 function mousemove(event){
-
+    flag1=true;
     let x= event.offsetX;
     let y= event.offsetY;
     realtimeX.push(x);
     realtimeY.push(y);
+
+    newArray=realtimeX; 
+    drawfilter=filteredsignal;
+    var get_signal= applyfilter({signal: realtimeX});
+    get_signal.then(data => get_data(data));
 
 }
 
 
 // clear arrays
 canvas.addEventListener("click", function(event){
-    //flag2= false;
+    flag1= false;
+    flag2= false;
     realtimeX=[];
     realtimeY=[];
+    amplitude= [];
+    filteredsignal=[];
 })
+
+
 
 
 
 // Read csv file
 function read_csv(){
-  //flag2= true;
-  var amplitude= [];
+  flag1= false;
+  flag2= true;
   var file= document.getElementById("csv").files[0]
   Papa.parse(file, {
       header : true,
       skipEmptyLines: true,
       complete : function(results, file) {  
-          //console.log("Result", results.data)
-          //console.log(results.data[0].time)
+          //console.log("Result", results.data)                   //console.log(results.data[0].time)
           for (i=0; i< results.data.length; i++){
-              time.push(results.data[i].time);
-              amplitude.push(results.data[i].amplitude);
+              timearray.push(parseFloat(results.data[i].time));
+              amplitude.push(parseFloat(results.data[i].amplitude));
 
           }
           console.log("Parsing Completed");
-          realtimeX= amplitude;
-          console.log(realtimeX)
-        }
-  });
+          //realtimeX= amplitude;
+          // get filtered signal
+          var get_signal= applyfilter({signal: amplitude});
+          get_signal.then(data => get_data(data));
 
-  // Plot csv data
-  var newArray= realtimeX.slice(0,29);
+        }
+
+        
+  }); 
+  newArray= amplitude.slice(0,19);
+  drawfilter= filteredsignal.slice(0,19)
+}
+
+
+
+
+
+  // Plot signal
   Plotly.newPlot('chart1', [{
     y: newArray,
     mode: 'lines',
@@ -122,161 +145,58 @@ function read_csv(){
   }], layout, config);
 
   var cnt = 0;
-  let i = 30;
   var interval = setInterval(function() {
-    // var y = realtimeX[i]
-    // newArray = newArray.concat(y)
-    realtimeX.splice(0, 1)
+
+          
+    newArray.splice(0, 1)
     var data_update = {
-      y: [realtimeX.slice(0,29)]
+      y: [newArray]
     };
+    if (flag1==false && flag2==true){
+                amplitude.splice(0,1);
+                newArray= amplitude.slice(0,19);
+        }
 
     Plotly.update('chart1', data_update)
-    // if(++i === 10000) clearInterval(interval);
-    if(++cnt === 10000) clearInterval(interval);
+
+    if(++cnt === 100) clearInterval(interval);
   }, 1000); 
 
+  
 
-  // Plot csv filtered data
-  var newArray2= realtimeX.slice(0,29);
+
+  // Plot filtered signal
   Plotly.newPlot('chart2', [{
-    y: newArray2,
+    y: drawfilter,
     mode: 'lines',
     line: {color: '#80CAF6'}
   }], layout2, config);
 
   var cnt2 = 0;
-  let i2= 30;
   var interval2 = setInterval(function() {
 
-    // var y = realtimeX[i2]
-    // newArray2 = newArray2.concat(y)
-    //realtimeX.splice(0, 1)
-
+    drawfilter.splice(0, 1)
     var data_update2 = {
-        y: [realtimeX]
+        y: [drawfilter]
       };
 
+    if (flag1==false && flag2==true){
+        filteredsignal.splice(0,1);
+        drawfilter= filteredsignal.slice(0,19);
+      }
+
     Plotly.update('chart2', data_update2)
-    //i2++;
-    if(++cnt2 === 10000) clearInterval(interval2);
-  }, 0.000001); 
-
-} 
+    if(++cnt2 === 100) clearInterval(interval2);
+  }, 1000); 
 
 
-
-
-// Plot signal
-Plotly.newPlot('chart1', [{
-  y: realtimeX,
-  mode: 'lines',
-  line: {color: '#80CAF6'}
-}], layout, config);
-
-var cnt = 0;
-var interval = setInterval(function() {
-
-  realtimeX.splice(0, 1)
-  var data_update = {
-    y: [realtimeX]
-  };
-
-  Plotly.update('chart1', data_update)
-
-  if(++cnt === 100) clearInterval(interval);
-}, 1000); 
-
-
-
-
-
-// Plot filtered signal
-Plotly.newPlot('chart2', [{
-  y: realtimeX,
-  mode: 'lines',
-  line: {color: '#80CAF6'}
-}], layout2, config);
-
-var cnt2 = 0;
-var interval2 = setInterval(function() {
-
-  realtimeX.splice(0, 1)
-
-  var data_update2 = {
-      y: [realtimeX]
-    };
-
-  Plotly.update('chart2', data_update2)
-  if(++cnt2 === 100) clearInterval(interval2);
-}, 1000); 
   
 
 
 
-
-// // Plot signal from csv file
-// function plotFromCSV() {
-//     Plotly.d3.csv(CSV, function(err, rows) {
-//         console.log(rows);
-//         processData(rows);
-//     });
-// }
-
-
-// function processData(allRows) {
-//     let x = [];
-//     let y = [];
-//     let row;
-
-//     let i = 0;
-//     while (i < allRows.length) {
-//         row = allRows[i];
-//         x.push(row["time"]);
-//         y.push(row["magnitude"]);
-//         i += 1;
-//     }
-    
-//     console.log("X", x);
-//     console.log("Y", y);
-
-//     makePlotly(x, y);
-// }
-
-
-// function makePlotly(x, y) {
-//     let traces = [
-//         {
-//             x: x,
-//             y: y,
-//             line: {
-//                 color: "#387fba",
-//                 width: 2
-//             }
-//         },
-//     ];
-
-//     let layout = {
-//         title: "Basic Line Chart",
-//         yaxis: {
-//             range: [0, 100]
-//         },
-//         xaxis: {
-//             // tickformat: "%d/%m/%y"
-//         },
-//     };
-
-//     //https://plot.ly/javascript/configuration-options/
-//     let config = { 
-//         responsive: true,
-//         // staticPlot: true,
-//         // editable: true
-//     };
-
-//     Plotly.newPlot("chart1", traces, layout, config);
-// }
-
-// plotFromCSV();
+function get_data(data){
+    filteredsignal= data
+  }
 
 
 
@@ -286,17 +206,14 @@ var interval2 = setInterval(function() {
 
 
 
-   
-    
 
 
 
-// var realtimeX= 0;
-// var realtimeY= 0;
-// var n = 5001;
-// var time = Array.from({length: n}, (item, index) => index);
-// console.log(time);
-// const CSV =  "https://raw.githubusercontent.com/chris3edwards3/exampledata/master/plotlyJS/line.csv";
+
+
+
+
+
 
 
 
@@ -343,31 +260,3 @@ var interval2 = setInterval(function() {
 //   var update = {
 //   y: [[realtimeX]]
 //   }
-
-//   Plotly.extendTraces('chart1', update, [0])
-
-//   if(++cnt === 100) clearInterval(interval);
-
-// }, 1000);
-// setInterval(function() {
-//      Plotly.extendTraces("chart1", data , [0])
-//    }, 200);
-    // margin: {
-    //     l: 50,
-    //     r: 50,
-    //     b: 100,
-    //     t: 100,
-    //     pad: 4
-    //   },
-// window_width = window.innerWidth;
-// window_height = window.innerHeight;
-// var window_width = 200;
-// var window_height = 80;
-// canvas.width = window_width;
-// canvas.height = window_height;
-// canvas.addEventListener("click", function(event){
-//     let x= event.offsetX;
-//     let y= event.offsetY;
-//     realtimeX.push(x);
-//     realtimeY.push(y);
-// })
