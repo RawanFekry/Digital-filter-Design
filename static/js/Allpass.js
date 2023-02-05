@@ -38,13 +38,45 @@ async function updateFilterPhase(allPassCoeff){
     Plotly.newPlot(
         allPassPhase,
         [{x: w, y: allPassAngels}],
-       {xaxis: {autorange: true,}, yaxis: { autorange: true,  }, },
+        {
+            paper_bgcolor:"#efefef",
+            plot_bgcolor:"#efefef",
+            autosize: false,
+            width:600,
+            height:250,
+
+            margin: {
+              l: 40,
+              r: 0,
+              b: 20,
+              t: 10,
+              pad: 0
+            }
+        },      
+      
        { staticPlot: true })
+
+
+
     Plotly.newPlot(
         finalPhase,
         [{x: w, y: finalFilterPhase}],
-       {xaxis: {autorange: true,}, yaxis: { autorange: true,  }, },
-       { staticPlot: true })   
+        {
+            paper_bgcolor:"#f4f4f4",
+            plot_bgcolor:"#f4f4f4",
+            autosize: false,
+            width:600,
+            height:250,
+
+            margin: {
+              l: 30,
+              r: 0,
+              b: 20,
+              t: 10,
+              pad: 0
+            }
+        },
+               { staticPlot: true })   
    
 }
 

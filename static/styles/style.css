@@ -172,7 +172,9 @@ background: none;
 .icon-check:before {
     content: "\f058";
 }
-
+ .icon-back:before{
+    content: "\f060";
+ }
 
 
 
@@ -307,3 +309,133 @@ padding: 15px;
                                /* Correct Phase */
 
 
+.parent2 {
+position: relative;
+height: 100%;
+width: 100%;
+display: grid;
+grid-template-columns: repeat(11, 0.8fr);
+grid-template-rows: repeat(7, 0.8fr) repeat(2, 1fr);
+grid-column-gap: 11px;
+grid-row-gap: 11px;
+}
+
+.div12 { grid-area: 3 / 4 / 7 / 6;}
+.div13 {grid-area: 2 / 1 / 9 / 4;}
+.div14 {grid-area: 1 / 1 / 2 / 4; }
+.div15 {grid-area: 9 / 5 / 10 / 8;}
+.div16 { grid-area: 1 / 8 / 5 / 12; }
+.div17 { grid-area: 5 / 8 / 9 / 12; }
+.div18 {grid-area: 2 / 7 / 3 / 8;  }
+.div19 {grid-area: 2 / 4 / 3 / 7; }
+
+
+
+
+
+
+#image-slider {
+	display: block;
+	margin: 0 auto;
+	width: 500px;
+	height: 650px;
+	overflow: hidden;
+	background: #fff;
+    overflow-y: scroll;
+}
+#image-slider ul {
+	list-style: none;
+}
+#image-slider ul li {
+	display: inline-block;
+	margin: 0;
+	padding: 0;
+}
+#image-slider ul img {
+	width: 100%;
+	max-width: 500px;
+	height:300px;
+}
+
+
+::-webkit-scrollbar {
+    height: 5px;
+    width: 10px;
+    border-radius: 5px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 5px;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+
+.title{
+    padding-top: 10px;
+    text-align: center;
+}
+
+.add{
+    cursor: pointer;
+    font-family: Lato;
+    font-size: 14px;
+    font-weight: normal;
+    font-style: normal;
+    letter-spacing: 0.2px;
+    /* color: white; */
+    border-radius: 20px;
+    padding: 0;
+    border: none;
+    background: none;
+}
+.items{
+    overflow-y: scroll;
+    position: relative;
+    margin: auto;
+    max-height: 200px;
+    padding: 15 20px;
+
+}
+#real{
+width: 115px;
+margin: 20px;
+margin-left: 100px;
+border-radius:20px ;  
+padding: 15px 20px;
+border: 3px solid #34495e;
+background-color:  var(--darkel);
+font-size: medium;
+}
+#imaginary{
+    width: 115px;
+    border-radius:20px ;  
+    border: 3px solid #34495e;
+    padding: 15px 20px;
+    background-color:  var(--darkel);
+    font-size: 15px;
+}
+
+#listOfA{
+    position: relative;
+    margin: auto;
+    width: 100%;
+    max-height: 250px;
+    padding: 15 30px;
+    margin-left: 100px; 
+   background-color:  var(--darkel);
+   font-size: large;
+   border-radius: 20px;
+   
+}
