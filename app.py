@@ -43,6 +43,21 @@ def getFrequencyResponce():
         k= gain
     return jsonify(response_data)
 
+
+@app.route('/getZerosAndPoles', methods=['POST'])
+@cross_origin()
+def getPoints():
+    if request.method == 'POST':
+        zerosAndPoles = json.loads(request.data)
+        zeros = zerosAndPoles['zeros']
+        poles = zerosAndPoles['poles']
+        response_data = {
+                'zeros': zeros,
+                'poles': poles,
+            }
+        print(response_data)
+    return jsonify(response_data)
+
 @app.route('/getAllPassFilter', methods=['POST', 'GET'])
 def getAllPassFilterData():
     if request.method == 'POST':

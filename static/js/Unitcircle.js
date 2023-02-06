@@ -17,6 +17,7 @@ const modesMap = {
 }
 
 
+
 const s = (p5_inst) => {
     p5_inst.setup = function () {
         p5.disableFriendlyErrors = true;
@@ -246,7 +247,6 @@ const s = (p5_inst) => {
             this.items = []
         }
 
-        //TODO: fix release bug
         therePoint(p, error = 5) {
             for (let i = 0; i < this.items.length; i++) {
                 let item = this.items[i]
@@ -349,3 +349,25 @@ document
     .addEventListener('click', () => filter_plane.remove(curr_picked.index))
 
 let filterCanvas = new p5(s, 'circle-canvas')
+
+async function download(data){
+    let points = { ze, po } =  await postData(`${API}/getZerosAndPoles`, data)
+    downloadCsv("filter.csv", json2csv.parse(points));
+    function downloadCsv(filename, csvData) {
+        const element = document.createElement("a");
+
+        element.setAttribute("href", `data:text/csv;charset=utf-8,${csvData}`);
+        element.setAttribute("download", filename);
+        element.style.display = "none";
+
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+        console.log(downloadData);
+        console.log(csvData);
+    }
+}
+const btnDownloadCsv = document.getElementById("btnDownloadCsv");
+btnDownloadCsv.addEventListener("click", () => {
+    download(filter_plane.getZerosPoles(radius));
+});
