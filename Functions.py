@@ -51,3 +51,27 @@ def apply_filter(zeros, poles, gain, signal):
     b, a= scipy.signal.zpk2tf(zeros, poles, gain)
     output= scipy.signal.lfilter(b, a, signal)
     return output
+
+
+
+# Get zeros and poles from upper circle
+def getfrompair(zeros, poles, gain):
+    zero= (int(len(zeros)/2))*[0]
+    pole= (int(len(poles)/2))*[0]
+    k= gain
+    if len(zeros)==1:
+        zero=zeros
+    if len(poles)==1:
+        pole=poles 
+    cnt1,cnt2= 0,0
+    for z in zeros: 
+        check= np.sign(z.imag)
+        if check!= -1:
+            zero[cnt1]= z
+            cnt1+=1
+    for p in poles: 
+        check= np.sign(p.imag)
+        if check!= -1:
+            pole[cnt2]= p
+            cnt2+=1
+    return zero,pole,k
