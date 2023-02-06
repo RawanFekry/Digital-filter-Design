@@ -1,7 +1,5 @@
 from flask import Flask , request, render_template,jsonify
 import json
-import scipy
-import scipy.signal
 from flask_cors import CORS, cross_origin
 from Functions import *
 
@@ -10,10 +8,12 @@ app.secret_key = "secret key"
 CORS(app)
 
 
-zero=[]
-pole=[]
-k=[]
-output=[]
+zero,pole,output= [0],[0],[0]
+angles, finalAngles= [0],[0]
+finalAngles=angles
+change= False
+k= 0
+ 
  
 @app.route('/', methods= ['GET','POST'])
 def home():
@@ -26,21 +26,22 @@ def home():
 @app.route('/getFilter', methods=['POST'])
 @cross_origin()
 def getFrequencyResponce():
-    global zero, pole, k
+    global zero, pole, k, angles,change
     if request.method == 'POST':
         zerosAndPoles = json.loads(request.data)
         zeros = parseToComplex(zerosAndPoles['zeros'])
         poles = parseToComplex(zerosAndPoles['poles'])
         gain = zerosAndPoles['gain']
         w, angles, magnitude = frequencyResponse(zeros, poles, gain)
+        if change==True:
+            angles=finalAngles
+            change=False
         response_data = {
                 'w': w.tolist(),
                 'angels': angles.tolist(),
                 'magnitude': magnitude.tolist()
             }
-        zero= zeros
-        pole= poles
-        k= gain
+        zero,pole,k= getfrompair(zeros,poles,gain)
     return jsonify(response_data)
 
 
@@ -75,7 +76,9 @@ def getAllPassFilterData():
 @app.route('/getFinalFilter', methods=['POST', 'GET'])
 @cross_origin()
 def getFinalFilter():
+    global finalAngles, change
     if request.method == 'POST':
+        change= True
         zerosAndPoles = json.loads(request.data)
         zeros = parseToComplex(zerosAndPoles['zeros'])
         poles = parseToComplex(zerosAndPoles['poles'])
@@ -95,6 +98,7 @@ def getFinalFilter():
                 'magnitude': finalMagnitude.tolist()
             }
     return jsonify(response_data)
+
 @app.route('/applyFilter', methods=['GET','POST'])
 @cross_origin()
 def filtered_signal():
@@ -104,9 +108,8 @@ def filtered_signal():
         key= list(unfiltered_signal.keys())[0]
         output = apply_filter(zeros=zero, poles=pole, gain=k, signal=unfiltered_signal.get(key))
         response_signal = {
-                'output': output.tolist(),
-            }
-        
+                'output': (output.real).tolist()
+            } 
     return jsonify(response_signal)
 
 
