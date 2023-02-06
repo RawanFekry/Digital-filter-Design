@@ -75,3 +75,10 @@ def getfrompair(zeros, poles, gain):
             pole[cnt2]= p
             cnt2+=1
     return zero,pole,k
+
+
+# Get zeros and poles for all pass filter
+def getzeroandpole(a):
+    zero= 1/np.conj(a)
+    pole= a
+    return zero,pole

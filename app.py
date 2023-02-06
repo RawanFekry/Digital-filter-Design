@@ -9,10 +9,13 @@ CORS(app)
 
 
 zero,pole,output= [0],[0],[0]
-angles, finalAngles= [0],[0]
-finalAngles=angles
-change= False
+allpasszeros, allpasspoles= [0],[0]
+filterangles, finalAngles, allPassAngles= [0],[0],[0]
+totalzeros, totalpoles= [0],[0]
+allpasscoefficients= [0]
 k= 0
+#change= False
+
  
  
 @app.route('/', methods= ['GET','POST'])
@@ -26,22 +29,24 @@ def home():
 @app.route('/getFilter', methods=['POST'])
 @cross_origin()
 def getFrequencyResponce():
-    global zero, pole, k, angles,change
+    global zero, pole, k, filterangles, allPassAngles, totalzeros, totalpoles
     if request.method == 'POST':
         zerosAndPoles = json.loads(request.data)
         zeros = parseToComplex(zerosAndPoles['zeros'])
         poles = parseToComplex(zerosAndPoles['poles'])
         gain = zerosAndPoles['gain']
-        w, angles, magnitude = frequencyResponse(zeros, poles, gain)
-        if change==True:
-            angles=finalAngles
-            change=False
+        w, filterangles, magnitude = frequencyResponse(zeros, poles, gain)
+        filterangles= np.add(allPassAngles, filterangles)
+        # if change==True: 
+        #     filterangles=finalAngles
         response_data = {
                 'w': w.tolist(),
-                'angels': angles.tolist(),
+                'angels': filterangles.tolist(),
                 'magnitude': magnitude.tolist()
             }
         zero,pole,k= getfrompair(zeros,poles,gain)
+        totalzeros= zero+allpasszeros
+        totalpoles= poles+allpasspoles
     return jsonify(response_data)
 
 
@@ -62,6 +67,7 @@ def getPoints():
 @app.route('/getAllPassFilter', methods=['POST', 'GET'])
 def getAllPassFilterData():
     if request.method == 'POST':
+        global allpasscoefficients
         data = json.loads(request.data)
         filterCoeffients = data['a']
         w, filter_angles = getAllPassFrequencyResponse(filterCoeffients)
@@ -76,15 +82,21 @@ def getAllPassFilterData():
 @app.route('/getFinalFilter', methods=['POST', 'GET'])
 @cross_origin()
 def getFinalFilter():
-    global finalAngles, change
+    global finalAngles, allPassAngles, allpasscoefficients
     if request.method == 'POST':
-        change= True
+        #change= True
         zerosAndPoles = json.loads(request.data)
         zeros = parseToComplex(zerosAndPoles['zeros'])
         poles = parseToComplex(zerosAndPoles['poles'])
         gain = 1
 
         a = zerosAndPoles['a']
+        allpasscoefficients=a
+        allpasszeros, allpasspoles= len(allpasscoefficients)*[0], len(allpasscoefficients)*[0]
+        if a!=[]:        
+            for cnt in range(0,len(allpasscoefficients)):
+                coefficient= allpasscoefficients[cnt]
+                allpasszeros[cnt], allpasspoles[cnt]= getzeroandpole(coefficient)
 
         w, allPassAngles = getAllPassFrequencyResponse(a)
         w, filterAngels, filterMagnitude = frequencyResponse(zeros, poles, gain)
@@ -106,7 +118,7 @@ def filtered_signal():
     if request.method == 'POST':
         unfiltered_signal = json.loads(request.data)      #this converts the json output to a python dictionary
         key= list(unfiltered_signal.keys())[0]
-        output = apply_filter(zeros=zero, poles=pole, gain=k, signal=unfiltered_signal.get(key))
+        output = apply_filter(zeros=totalzeros, poles=totalpoles, gain=k, signal=unfiltered_signal.get(key))
         response_signal = {
                 'output': (output.real).tolist()
             } 
