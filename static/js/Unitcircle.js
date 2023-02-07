@@ -388,27 +388,26 @@ function importfilter(){
                     zeros.push(results.data[i].zeros);
 
                 }
-                }
+                const strparsedpoles= poles;
+                const strparsedzeroes= zeros;
+                console.log(strparsedpoles);
+                console.log(strparsedzeroes);
+                var arrayparsedpoles = '{"key": '+strparsedpoles+'}';
+                var arrayparsedzeros = '{"key": '+strparsedzeroes+'}';
+                console.log(arrayparsedpoles);
+                const polesobj= JSON.parse(arrayparsedpoles);
+                const zerosobj= JSON.parse(arrayparsedzeros);
+                const finalpoles= polesobj.key;
+                const finalzeros= zerosobj.key;
+                console.log(finalpoles);
+                console.log(finalzeros);
+                points = {zeros : finalzeros, poles : finalpoles};
+                updateFilterDesign(points)
+            }
                 }); 
-        
-        const strparsedpoles= poles;
-        const strparsedzeroes= zeros;
-        console.log(strparsedpoles);
-        console.log(strparsedzeroes);
-        var arrayparsedpoles = '{"key": '+strparsedpoles+'}';
-        var arrayparsedzeros = '{"key": '+strparsedzeroes+'}';
-        console.log(arrayparsedpoles);
-        const polesobj= JSON.parse(arrayparsedpoles);
-        const zerosobj= JSON.parse(arrayparsedzeros);
-        const finalpoles= polesobj.key;
-        const finalzeros= zerosobj.key;
-        console.log(finalpoles);
-        console.log(finalzeros);
-        points = {zeros : finalzeros, poles : finalpoles};
-        updateFilterDesign(points)
 };
 
-
+    
 // async function importfilter(){
 //    let data = {frequency,phase,magnitude}
 //    data = await postData(`${API}/importfilter`, data)
