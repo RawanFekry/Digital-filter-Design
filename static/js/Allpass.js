@@ -9,6 +9,7 @@ function addNewA() {
     var newA_real = document.getElementById('real').value
     var newA_img = document.getElementById('imaginary').value
     var newA = math.complex(newA_real,newA_img)
+    console.log(newA)
     // if(newA > 1 || newA < -1){
     //     alert(`invalid ${newA} as Filter Coefficient`)
     //     return
@@ -83,7 +84,8 @@ async function updateFilterPhase(allPassCoeff){
 function updateAllPassCoeff(){
     let allPassCoeff = []
     document.querySelectorAll('.target1').forEach(item => {
-        let aValue = parseFloat(item.dataset.avalue)
+        let aValue = (item.dataset.avalue)
+        console.log(aValue)
         let checked = item.checked
         if (checked) allPassCoeff.push(aValue)
     })

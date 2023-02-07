@@ -82,3 +82,11 @@ def getzeroandpole(a):
     zero= 1/np.conj(a)
     pole= a
     return zero,pole
+
+
+# Convert string to complex
+def convert(a):
+    a = a.replace(' ', '')
+    validcomplex= a.replace("i", "j") 
+    converted_a = complex(validcomplex)
+    return converted_a
