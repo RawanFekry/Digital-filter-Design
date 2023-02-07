@@ -404,8 +404,8 @@ function importfilter(){
         const finalzeros= zerosobj.key;
         console.log(finalpoles);
         console.log(finalzeros);
-        // points = {zeros : parsedzeroes, poles : parsedpoles};
-        // updateFilterDesign(points);
+        points = {zeros : finalzeros, poles : finalpoles};
+        updateFilterDesign(points);
 };
 
 
