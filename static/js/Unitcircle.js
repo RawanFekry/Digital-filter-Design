@@ -374,10 +374,10 @@ async function download(data){
 
 
 
-var poles=[];
-var zeros=[];  
+ 
 function importfilter(){
-  
+    var poles=[];
+    var zeros=[]; 
     var file= document.getElementById("csv2").files[0]
         Papa.parse(file, {
             header : true,
