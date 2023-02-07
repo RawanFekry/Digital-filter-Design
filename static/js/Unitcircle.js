@@ -16,7 +16,10 @@ const modesMap = {
     'pole': Mode.POLE,
 }
 
-
+const btnDownloadCsv = document.getElementById("btnDownloadCsv");
+btnDownloadCsv.addEventListener("click", () => {
+    download(filter_plane.getZerosPoles(radius));
+});
 
 const s = (p5_inst) => {
     p5_inst.setup = function () {
@@ -367,7 +370,37 @@ async function download(data){
         console.log(csvData);
     }
 }
-const btnDownloadCsv = document.getElementById("btnDownloadCsv");
-btnDownloadCsv.addEventListener("click", () => {
-    download(filter_plane.getZerosPoles(radius));
-});
+
+
+
+var poles=[];
+var zeros=[];
+
+function importfilter(){
+    
+    var file= document.getElementById("csv2").files[0]
+        Papa.parse(file, {
+            header : true,
+            skipEmptyLines: true,
+            complete : function(results, file) {  
+                for (i=0; i< results.data.length; i++){
+                    poles.push(results.data[i].poles);
+                    zeros.push(results.data[i].zeros);
+
+                }
+                }
+                }); 
+        const parsedpoles = poles;
+        const parsedzeroes =zeros;
+        console.log(parsedpoles);
+        console.log(parsedzeroes);
+        points = {zeros : parsedzeroes, poles : parsedpoles};
+        updateFilterDesign(points);
+};
+
+
+// async function importfilter(){
+//    let data = {frequency,phase,magnitude}
+//    data = await postData(`${API}/importfilter`, data)
+//     updateFilterDesign(data)
+// }

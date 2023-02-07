@@ -67,13 +67,15 @@ def getfrompair(zeros, poles, gain):
     for z in zeros: 
         check= np.sign(z.imag)
         if check!= -1:
-            zero[cnt1]= z
-            cnt1+=1
+            if len(zero) < cnt1:
+                zero[cnt1]= z
+                cnt1+=1
     for p in poles: 
         check= np.sign(p.imag)
         if check!= -1:
-            pole[cnt2]= p
-            cnt2+=1
+            if len(pole) < cnt2:
+                pole[cnt2]= p
+                cnt2+=1
     return zero,pole,k
 
 
