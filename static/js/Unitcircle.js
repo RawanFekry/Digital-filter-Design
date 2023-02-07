@@ -390,12 +390,22 @@ function importfilter(){
                 }
                 }
                 }); 
-        const parsedpoles = poles;
-        const parsedzeroes =zeros;
-        console.log(parsedpoles);
-        console.log(parsedzeroes);
-        points = {zeros : parsedzeroes, poles : parsedpoles};
-        updateFilterDesign(points);
+        
+        const strparsedpoles = poles;
+        const strparsedzeroes =zeros;
+        console.log(strparsedpoles);
+        console.log(strparsedzeroes);
+        var arrayparsedpoles = '{"key": '+ strparsedpoles +'}';
+        var arrayparsedzeros = '{"key": '+ strparsedzeroes +'}';
+        console.log(arrayparsedpoles);
+        const polesobj= JSON.parse(arrayparsedpoles);
+        const zerosobj= JSON.parse(arrayparsedzeros);
+        const finalpoles= polesobj.key;
+        const finalzeros= zerosobj.key;
+        console.log(finalpoles);
+        console.log(finalzeros);
+        // points = {zeros : parsedzeroes, poles : parsedpoles};
+        // updateFilterDesign(points);
 };
 
 
