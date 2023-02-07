@@ -373,11 +373,11 @@ async function download(data){
 
 
 
-var poles=[];
-var zeros=[];
 
+var poles=[];
+var zeros=[];  
 function importfilter(){
-    
+  
     var file= document.getElementById("csv2").files[0]
         Papa.parse(file, {
             header : true,
@@ -391,12 +391,12 @@ function importfilter(){
                 }
                 }); 
         
-        const strparsedpoles = poles;
-        const strparsedzeroes =zeros;
+        const strparsedpoles= poles;
+        const strparsedzeroes= zeros;
         console.log(strparsedpoles);
         console.log(strparsedzeroes);
-        var arrayparsedpoles = '{"key": '+ strparsedpoles +'}';
-        var arrayparsedzeros = '{"key": '+ strparsedzeroes +'}';
+        var arrayparsedpoles = '{"key": '+strparsedpoles+'}';
+        var arrayparsedzeros = '{"key": '+strparsedzeroes+'}';
         console.log(arrayparsedpoles);
         const polesobj= JSON.parse(arrayparsedpoles);
         const zerosobj= JSON.parse(arrayparsedzeros);
@@ -405,7 +405,7 @@ function importfilter(){
         console.log(finalpoles);
         console.log(finalzeros);
         points = {zeros : finalzeros, poles : finalpoles};
-        updateFilterDesign(points);
+        updateFilterDesign(points)
 };
 
 
