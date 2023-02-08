@@ -81,14 +81,8 @@ const s = (p5_inst) => {
     p5_inst.mouseDragged = function () {
         let p = p5_inst.createVector(p5_inst.mouseX, p5_inst.mouseY)
         if (curr_picked != NONE_PICKED && isInsideCircle(p, unit_circle_center, radius, 0)) {
-            if(!curr_picked.item.conjugate){
-                p.y = unit_circle_center.y
                 curr_picked.item.point.center = p
-            }
-            else{
-                curr_picked.item.point.center = p
-                curr_picked.item.conjugate.center = curr_picked.item.point.getConjugate().center
-            }
+            
         }
         updateFilterDesign(filter_plane.getZerosPoles(radius))
         updateAllPassCoeff()
@@ -110,23 +104,20 @@ const s = (p5_inst) => {
     }
 
     function drawPoints() {
-        filter_plane.items.forEach(({ point, conjugate }) => {
+        filter_plane.items.forEach(({ point}) => {
             if (point == curr_picked.item.point) {
                 point.draw(undefined, undefined, (picked = true))
-                conjugate?.draw(undefined, undefined, (picked = true))
             }
             else {
                 point.draw()
-                conjugate?.draw()
             }
 
         })
     }
 
     function drawUnitCricle() {
-        // p5_inst.background('rgba(0,255,0, 0)')
         p5_inst.stroke(255)
-        p5_inst.fill('#ccc')
+        p5_inst.fill('#f9f9f9')
         p5_inst.circle(unit_circle_center.x, unit_circle_center.y, radius * 2)
         p5_inst.stroke("#5b5a5a")
         p5_inst.noFill()
@@ -399,17 +390,9 @@ function importfilter(){
                 const zerosobj= JSON.parse(arrayparsedzeros);
                 const finalpoles= polesobj.key;
                 const finalzeros= zerosobj.key;
-                console.log(finalpoles);
-                console.log(finalzeros);
+              
                 points = {zeros : finalzeros, poles : finalpoles};
                 updateFilterDesign(points)
             }
                 }); 
 };
-
-    
-// async function importfilter(){
-//    let data = {frequency,phase,magnitude}
-//    data = await postData(`${API}/importfilter`, data)
-//     updateFilterDesign(data)
-// }

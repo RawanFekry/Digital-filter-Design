@@ -9,7 +9,7 @@ CORS(app)
 
 
 zero,pole,output= [0],[0],[0]
-allpasszeros, allpasspoles= [0],[0]
+allpasszeros, allpasspoles= [],[]
 filterangles, finalAngles, allPassAngles= [0],[0],[0]
 totalzeros, totalpoles= [0],[0]
 allpasscoefficients= [0]
@@ -126,10 +126,13 @@ def filtered_signal():
     if request.method == 'POST':
         unfiltered_signal = json.loads(request.data)      #this converts the json output to a python dictionary
         key= list(unfiltered_signal.keys())[0]
+        print(totalzeros)
         output = apply_filter(zeros=totalzeros, poles=totalpoles, gain=k, signal=unfiltered_signal.get(key))
         response_signal = {
-                'output': (output.real).tolist()
+                'output': (output).tolist()
             } 
+
+        print(totalzeros)
     return jsonify(response_signal)
 
 

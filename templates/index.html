@@ -10,7 +10,6 @@
     <title>Digital Filter Design</title>
     <link rel="stylesheet" href="../static/styles/style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="../static/java script/jquery-3.6.2.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js "></script> 
     <script src="../static/js/p5.min.js"></script>
@@ -29,14 +28,15 @@
 
 
 		<div class="element div1"> 
-            <input type="file" accept=".csv" id="csv2" onclick="importfilter()" class="btn btn-4 btn-sep icon-import">
+            <input type="file" accept=".csv" id="csv2" onclick="importfilter()"  style="display: none;">
+			<label for="csv2" class="btn btn-4 btn-sep icon-import" style="top: 30px;"> Import Filter</label>
 			<!-- <button  class="btn btn-4 btn-sep icon-export" id="import-filter" >Import Filter</button> -->
         </div>
     
     
 	<div class="element div2" > 
-		<div class="toggle-div" id="design-unit-circle">
-		<div id='circle-control' class="button-element" onclick="toggleas(this)">
+		<div class="toggle-div" id="design-unit-circle" style="margin-right: 10px;">
+		<div id='circle-control' class="button-element" onclick="toggleas(this)" >
 			<button id= "zero" class="btn-cricle-control mode-control">Add Zeros</button>
 		</div>
 		<div class="button-element dark-button" onclick="toggleas(this)">
@@ -44,7 +44,7 @@
 		</div>	
 		
 		</div>
-		<div  class="button-remove" onclick="remove(this)">
+		<div  class="button-remove" onclick="remove(this)" style="margin-left: 10px;">
 			<button id="remove" ><i class="fa-solid fa-trash"></i></button>
 		</div>
 		
@@ -107,7 +107,7 @@
 		
 		<div id="list1" class="dropdown-check-list" tabindex="100">
 			<ul id="listOfA" class="items">
-				<li><input class="target1" type="checkbox" data-avalue="1" />1</li>
+				<!-- <li><input class="target1" type="checkbox" data-avalue="1" />1</li>
 				<li><input class="target1" type="checkbox" data-avalue="0.1" />0.1 </li>
 				<li><input class="target1" type="checkbox" data-avalue="0.5" />0.5</li>
 				<li><input class="target1" type="checkbox" data-avalue="-0.9" />-0.9</li>
@@ -115,7 +115,7 @@
 				<li><input class="target1" type="checkbox" data-avalue="0.78" />0.78</li>
 				<li><input class="target1" type="checkbox" data-avalue="0.99" />0.99</li>
 				<li><input class="target1" type="checkbox" data-avalue="0.358" />0.358</li>
-				<li><input class="target1" type="checkbox" data-avalue="0.836" />0.836</li>
+				<li><input class="target1" type="checkbox" data-avalue="0.836" />0.836</li> -->
 			</ul>
 		</div>
 
@@ -127,31 +127,31 @@
 		<div id="image-slider">
 			<ul>
 				<li>          
-				<img class="image" src="static/img/1.jpeg">
+				<img class="image" src="static/img/1.jpeg" title="a=1">
 				</li>
 				<li>           
-				 <img class="image" src="static/img/0.1.jpeg">
+				 <img class="image" src="static/img/0.1.jpeg" title="a=0.1">
 				</li>
 				<li>           
-					<img class="image" src="static/img/0.5.jpeg">
+					<img class="image" src="static/img/0.5.jpeg" title="a=0.5">
 				</li>
 				   <li>           
-					<img class="image" src="static/img/-0.45.jpeg">
+					<img class="image" src="static/img/-0.45.jpeg" title="a=-0.45">
 				</li>
 				<li>           
-					<img class="image" src="static/img/0.358.jpeg">
+					<img class="image" src="static/img/0.358.jpeg" title="a=0.385">
 				</li>
 				<li>           
-					<img class="image" src="static/img/0.99.jpeg">
+					<img class="image" src="static/img/0.99.jpeg" title="a=0.99">
 				</li>
 				<li>           
-					<img class="image" src="static/img/0.836.jpeg">
+					<img class="image" src="static/img/0.836.jpeg" title="a=0.836">
 				</li>
 				<li>           
-					<img class="image" src="static/img/0.78.jpeg">
+					<img class="image" src="static/img/0.78.jpeg" title="a=0.78">
 				</li>
 				<li>           
-					<img class="image" src="static/img/-0.9.jpeg">
+					<img class="image" src="static/img/-0.9.jpeg" title="a=-0.9" >
 				</li>
 			</ul>
 	
