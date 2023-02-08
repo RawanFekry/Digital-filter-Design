@@ -217,46 +217,4 @@ function get_data(data){
 
 
 
-// // Plot generated signal
-// var time = new Date();
-// var data = [{
-//   //x: [time],
-//   y: [realtimeX],
-//   mode: 'lines',
-//   line: {color: '#80CAF6'}
-// }];
-// // Define Layout
-// var layout = {
-//     options: {
-//         scales:{x: {type: 'realtime'} }
-//     },
-       
-//     autosize: false,
-//     width: 400,
-//     height: 300,
-//     xaxis: {title: "Time()",titlefont: { size:10, color: 'black'},
-//         tickfont: {
-//             size: 10,
-//             color: 'black'}},
-//     yaxis: {
-//         //automargin: true,
-//         titlefont: { size:10, color: 'black'},
-//         title: "Magnitude(volt)"},
-//     title: {
-//     text:"Unfiltered Signal",
-//     font: {
-//         size: 15
-//     }
-//     }
-//   };
-// // Define config
-//   let config = { 
-//         responsive: true, 
-//         };
 
-// Plotly.newPlot('chart1', data,layout,config);
-// var cnt = 0;
-// var interval = setInterval(function() {
-//   var update = {
-//   y: [[realtimeX]]
-//   }
