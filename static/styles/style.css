@@ -275,7 +275,7 @@ padding: 15px;
 #upload{
     cursor: pointer;
 position: relative;
-content: 'Upload file';
+/* content: 'Upload file'; */
 font-family: Lato;
 font-size: 14px;
 font-weight: normal;
