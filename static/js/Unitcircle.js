@@ -81,14 +81,8 @@ const s = (p5_inst) => {
     p5_inst.mouseDragged = function () {
         let p = p5_inst.createVector(p5_inst.mouseX, p5_inst.mouseY)
         if (curr_picked != NONE_PICKED && isInsideCircle(p, unit_circle_center, radius, 0)) {
-            if(!curr_picked.item.conjugate){
-                p.y = unit_circle_center.y
-                //curr_picked.item.point.center = p
-            }
-            // else{
-            //     curr_picked.item.point.center = p
-            //     curr_picked.item.conjugate.center = curr_picked.item.point.getConjugate().center
-            // }
+            curr_picked.item.point.center = p
+
         }
         updateFilterDesign(filter_plane.getZerosPoles(radius))
         updateAllPassCoeff()
@@ -113,11 +107,9 @@ const s = (p5_inst) => {
         filter_plane.items.forEach(({ point, conjugate }) => {
             if (point == curr_picked.item.point) {
                 point.draw(undefined, undefined, (picked = true))
-                conjugate?.draw(undefined, undefined, (picked = true))
             }
             else {
                 point.draw()
-                //conjugate?.draw()
             }
 
         })
@@ -366,8 +358,6 @@ async function download(data){
         document.body.appendChild(element);
         element.click();
         document.body.removeChild(element);
-        console.log(downloadData);
-        console.log(csvData);
     }
 }
 

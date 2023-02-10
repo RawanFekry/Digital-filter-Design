@@ -160,7 +160,7 @@ function read_csv(){
     Plotly.update('chart1', data_update)
 
     if(++cnt === 10000) clearInterval(interval);
-  }, 1000); 
+  }, 100); 
 
   
 
@@ -187,7 +187,7 @@ function read_csv(){
 
     Plotly.update('chart2', data_update2)
     if(++cnt2 === 10000) clearInterval(interval2);
-  }, 1000); 
+  }, 100); 
 
 
   
