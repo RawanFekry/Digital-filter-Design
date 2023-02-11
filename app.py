@@ -60,8 +60,8 @@ def getPoints():
                 'zeros': logic.zeros,
                 'poles': logic.poles,
             }
-        print(response_data)
     return jsonify(response_data)
+
 
 @app.route('/getAllPassFilter', methods=['POST', 'GET'])
 def getAllPassFilterData():
@@ -87,7 +87,6 @@ def getFinalFilter():
     global finalAngles, allPassAngles
     count=0
     if request.method == 'POST':
-        #change= True
         zerosAndPoles = json.loads(request.data)
         logic.zeros = logic.parseToComplex(zerosAndPoles['zeros'])
         logic.poles = logic.parseToComplex(zerosAndPoles['poles'])
@@ -124,14 +123,12 @@ def filtered_signal():
     if request.method == 'POST':
         unfiltered_signal = json.loads(request.data)      #this converts the json output to a python dictionary
         key= list(unfiltered_signal.keys())[0]
-        print(totalzeros)
         logic.zeros=totalzeros
         logic.poles=totalpoles
         output = logic.apply_filter(signal=unfiltered_signal.get(key))
         response_signal = {
                 'output': (output).tolist()
-            } 
-
+            }
         print(totalzeros)
     return jsonify(response_signal)
 

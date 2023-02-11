@@ -82,6 +82,7 @@ class Logic():
         return zero,pole,k
 
 
+    # Get zeros and poles for all pass filter
     def getzeroandpole(self,a):
         zero= 1/np.conj(a)
         pole= a
